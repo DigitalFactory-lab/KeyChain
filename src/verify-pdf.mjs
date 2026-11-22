@@ -7,6 +7,13 @@ const blobs=new Map();let last;w.URL.createObjectURL=b=>{let id='blob:'+blobs.si
 w.eval(fs.readFileSync('app.js','utf8'));await new Promise(r=>setTimeout(r,900));const d=w.document,results=[];
 for(const variant of ['mogra','delagothicone','both','multiline']){
  if(['mogra','delagothicone'].includes(variant)){d.querySelector(`[data-font="${variant}"]`).click();}else if(variant==='multiline'){d.getElementById('text').value='Digi\nFactory';d.getElementById('text').dispatchEvent(new w.Event('input'));}else{d.querySelector(`[data-position="${variant}"]`).click();}
+ if(variant==='both'){
+  for(const [side,shape] of [['left','microphone'],['right','music']]){
+   d.querySelector('[data-side="'+side+'"]').click();
+   d.querySelector('[data-shape="'+shape+'"]').click();
+  }
+  assert.deepEqual([...d.querySelectorAll('#stage [data-motif]')].map(g=>g.dataset.motif),['microphone','music']);
+ }
  await new Promise(r=>setTimeout(r,200));const dims=d.querySelector('#stage svg').getAttribute('viewBox');
  for(const type of ['laser','uv']){last=null;d.getElementById('export-'+type).click();for(let i=0;i<100&&!last;i++)await new Promise(r=>setTimeout(r,50));assert(last,'PDF download missing: '+variant+' '+type);assert(last.name.endsWith('-'+type+'.pdf'));const bytes=Buffer.from(await last.blob.arrayBuffer());assert.equal(bytes.subarray(0,5).toString(),'%PDF-');const path='/tmp/'+variant+'-'+type+'.pdf';fs.writeFileSync(path,bytes);results.push({variant,type,path,dims});}
 }

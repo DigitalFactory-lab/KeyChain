@@ -32,17 +32,18 @@ if(rows.length>1){
 }
 let glyphs=flatten(path.commands);let bb=bounds(glyphs);let tx=-bb.x1,ty=-bb.y1;glyphs=glyphs.map(p=>p.map(q=>({X:q.X+Math.round(tx*S),Y:q.Y+Math.round(ty*S)})));const textW=bb.x2-bb.x1,textH=bb.y2-bb.y1;let solid=offset(exteriors(glyphs),config.border),art=[`<path fill="${config.textColor}" d="${path.toPathData(4)}" transform="translate(${tx} ${ty})"/>`];let right=textW,left=0;
 for(const item of config.decorations){
- if(item.shape==='none')continue;
- const motif=MOTIFS[item.shape],w=Math.max(7,textH*.92)*item.size/100,y=(textH-w)/2,gap=item.gap??config.border*.6;
+ const w=Math.max(7,textH*.92)*item.size/100,y=(textH-w)/2,gap=item.gap??config.border*.6;
  const position=item.position||'right';
  if(!['left','right','both'].includes(position))throw Error('Choisis la position du motif.');
- const placements=[];
- if(position==='left'||position==='both'){left-=gap+w;placements.push(left);}
- if(position==='right'||position==='both'){right+=gap;placements.push(right);right+=w;}
- for(const x of placements){
+ for(const side of position==='both'?['left','right']:[position]){
+  const shape=position==='both'?(item[side+'Shape']??item.shape):item.shape;
+  if(shape==='none')continue;
+  const motif=MOTIFS[shape];
+  const x=side==='left'?left-gap-w:right+gap;
+  if(side==='left')left=x;else right=x+w;
   const contours=svgToContours(motif.d).map(p=>p.map(q=>({X:Math.round((q.X/S*w/100+x)*S),Y:Math.round((q.Y/S*w/100+y)*S)})));
   solid.push(...offset(exteriors(contours),config.border+(motif.strokeWidth||0)*w/200));
-  art.push(`<g data-motif="${item.shape}" transform="translate(${x} ${y}) scale(${w/100})"><path d="${motif.d} ${motif.cutouts||''}" fill="${item.color}" stroke="${item.color}" stroke-width="${motif.strokeWidth||0}" stroke-linejoin="round" stroke-linecap="round" fill-rule="evenodd"/>${motif.detail?`<path d="${motif.detail}" fill="${config.textColor}"/>`:''}</g>`);
+  art.push(`<g data-motif="${shape}" transform="translate(${x} ${y}) scale(${w/100})"><path d="${motif.d} ${motif.cutouts||''}" fill="${item.color}" stroke="${item.color}" stroke-width="${motif.strokeWidth||0}" stroke-linejoin="round" stroke-linecap="round" fill-rule="evenodd"/>${motif.detail?`<path d="${motif.detail}" fill="${config.textColor}"/>`:''}</g>`);
  }
 }
 const hole={x:left-config.border-config.hole/2,y:textH/2,r:config.hole/2};solid.push(circle(hole.x,hole.y,hole.r+config.border));const connected=connect(solid,Math.max(2,config.border*1.5));const b=bounds(connected);return {outer:connected[0],art:art.join(''),hole,bounds:b,width:b.x2-b.x1,height:b.y2-b.y1,fontHeight:lineHeight};}
