@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "esbuild src/app.js --bundle --minify --outfile=app.js",
-    "test": "node src/verify.mjs && node src/verify-multiline.mjs && node src/verify-materials.mjs && node src/verify-interface.mjs && node src/verify-pdf.mjs && node src/verify-png.mjs"
+    "test": "node src/verify.mjs && node src/verify-multiline.mjs && node src/verify-attache.mjs && node src/verify-materials.mjs && node src/verify-interface.mjs && node src/verify-pdf.mjs && node src/verify-png.mjs"
   },
   "keywords": [],
   "author": "",

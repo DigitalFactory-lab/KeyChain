@@ -6,7 +6,7 @@ Texte vectorisé localement avec OpenType.js, huit polices embarquées, un motif
 
 Exports laser PDF vectoriel avec tracé noir de 0,6 mm ; UV PDF vectoriel avec chemins colorés ; UV PNG transparent à 600 ppp avec métadonnées pHYs. Les PDF partagent la même origine et le même format. Le PNG conserve ce format à l’arrondi d’un pixel près. Ne pas recadrer les exports avant le positionnement dans le logiciel d’impression. Le support choisi (plexi noir, plexi blanc ou bois clair) apparaît dans l’aperçu uniquement. Les yeux et le nez du crâne sont des contreformes transparentes dans les exports UV PDF et PNG ; ils ne créent aucune découpe laser supplémentaire. Le veinage du bois est une représentation indicative. La sous-couche de blanc doit conserver ces transparences. La sous-couche de blanc, les paramètres machine et le gabarit physique sont à préparer dans le logiciel machine.
 
-Les ponts nécessaires à l’union sont ajoutés automatiquement. Les réglages ne constituent pas une validation de résistance pour un matériau donné. Une découpe et une impression d’essai permettent de valider le réglage choisi.
+L’anneau et le motif se calent contre le contour réel des lettres, pas contre leur boîte : ils restent soudés à la silhouette même quand la première ou la dernière lettre est penchée ou creuse (D de Sedgwick, y de Knewave, T ou J seul). L’écart réglé sépare réellement le motif de la lettre la plus proche, et le trou garde une bordure pleine. Les ponts restent un dernier recours, pour un signe isolé comme une apostrophe. Les réglages ne constituent pas une validation de résistance pour un matériau donné. Une découpe et une impression d’essai permettent de valider le réglage choisi.
 
 ## Polices
 
@@ -31,7 +31,7 @@ Pour ajouter une police : déposer le fichier `.ttf` et sa licence dans `assets/
 
 `npm ci`, `npm run build`, `npm test`.
 
-Sources dans `src/`, sortie statique à la racine. `npm test` lance les six scripts de vérification (géométrie, multiligne, supports, interface, PDF, PNG).
+Sources dans `src/`, sortie statique à la racine. `npm test` lance les sept scripts de vérification (géométrie, multiligne, attache de l’anneau et du motif, supports, interface, PDF, PNG).
 
 ## GitHub Pages
 
